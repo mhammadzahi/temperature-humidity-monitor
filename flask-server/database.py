@@ -7,7 +7,7 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(
 
 class Database:
 
-    def __init__(self, config_path='config.yaml'):
+    def __init__(self, config_path):
         self.config_path = config_path
         self.config = self._load_config()
         self.conn = None
@@ -16,22 +16,24 @@ class Database:
             raise ValueError("Failed to load database configuration.")
 
     def _load_config(self):
-        """Loads database configuration from the YAML file."""
         if not os.path.exists(self.config_path):
-            logging.error(f"Configuration file not found: {self.config_path}")
+            print(f"Configuration file not found: {self.config_path}")
             return None
         try:
             with open(self.config_path, 'r') as f:
                 return yaml.safe_load(f)
+
         except yaml.YAMLError as e:
             logging.error(f"Error parsing YAML configuration: {e}")
             return None
+            
         except Exception as e:
             logging.error(f"Error reading configuration file: {e}")
             return None
 
+
+
     def connect(self):
-        """Establishes a connection to the database."""
         if self.conn and not self.conn.closed:
             logging.info("Already connected to the database.")
             return True
@@ -107,6 +109,7 @@ class Database:
                 logging.info(f"Creating table '{table_name}'...")
                 self.cursor.execute(create_table_sql)
                 logging.info(f"Table '{table_name}' checked/created successfully.")
+                
             except psycopg2.Error as e:
                 logging.error(f"Error creating table '{table_name}': {e}")
                 # self.conn.rollback() # Rollback if not using autocommit

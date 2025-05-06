@@ -110,6 +110,7 @@ void sendDataToServer(float temp, float hum) {
   // Start HTTP POST request
   if (http.begin(client, serverUrl)) { // Use client instance
       http.addHeader("Content-Type", "application/json");
+      http.addHeader("X-API-Key", "6vQr78Y07JHKGmGiBG24NF8nZaZDkPBpeGcQAi8AvzyY")
 
       // Send the request with the payload
       int httpResponseCode = http.POST(jsonPayload);

@@ -1,8 +1,11 @@
 from flask import Flask, request, jsonify, render_template_string
 import datetime
+from database import Database
 
 app = Flask(__name__)
-db = Database(config_path='../config.yaml')
+db = Database('config.yaml')
+
+
 
 # Simple in-memory storage for the latest data
 latest_data = {
@@ -12,16 +15,23 @@ latest_data = {
     "error": None
 }
 
-HTML_TEMPLATE = """
+HTML_TEMPLATE = """ """
 
-"""
+API_KEY = "6vQr78Y07JHKGmGiBG24NF8nZaZDkPBpeGcQAi8AvzyY"
 
 @app.route('/')
 def index():
     return render_template_string(HTML_TEMPLATE, data=latest_data.copy())
 
+
+
 @app.route('/data', methods=['POST'])
 def receive_data():
+    submitted_key = request.headers.get('X-API-Key')
+    print(f"Submitted key: {submitted_key}")
+    if submitted_key != API_KEY:
+        return jsonify({"status": "error", "message": "Unauthorized"}), 401
+
     global latest_data
     try:
         data = request.get_json()
@@ -51,6 +61,10 @@ def receive_data():
         latest_data['error'] = str(e)
         return jsonify({"status": "error", "message": str(e)}), 400
 
+
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5011, debug=False)
+    if db.connect():
+        if db.create_tables():
+            db.disconnect()
+            app.run(host='0.0.0.0', port=5011, debug=True)
 
