@@ -2,13 +2,17 @@ from flask import Flask, request, jsonify, render_template
 import datetime
 from database import Database
 import os
+from dotenv import load_dotenv
+
+from asgiref.wsgi import WsgiToAsgi
+import uvicorn
+
+load_dotenv() # Load environment variables from .env file
 
 app = Flask(__name__)
 db = Database('config.yaml')
 
 
-
-# Simple in-memory storage for the latest data
 latest_data = {
     "temperature": None,
     "humidity": None,
@@ -67,8 +71,11 @@ def receive_data():
         return jsonify({"status": "error", "message": str(e)}), 400
 
 
+#asgi_app = WsgiToAsgi(app)  # Convert Flask WSGI to ASGI
+
 if __name__ == '__main__':
     if db.connect():
         if db.create_tables():
             db.disconnect()
-            app.run(host='0.0.0.0', port=5011, debug=True)
+            app.run(host='0.0.0.0', port=5011, debug=True)# dev
+            #uvicorn.run(asgi_app, host="0.0.0.0", port=50011)# prod
