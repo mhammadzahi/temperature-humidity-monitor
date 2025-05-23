@@ -1,6 +1,7 @@
-from flask import Flask, request, jsonify, render_template_string
+from flask import Flask, request, jsonify, render_template
 import datetime
 from database import Database
+import os
 
 app = Flask(__name__)
 db = Database('config.yaml')
@@ -15,13 +16,17 @@ latest_data = {
     "error": None
 }
 
-HTML_TEMPLATE = """ """
 
-API_KEY = "6vQr78Y07JHKGmGiBG24NF8nZaZDkPBpeGcQAi8AvzyY"
+API_KEY = os.environ.get('API_KEY')
+
+if not API_KEY:
+    print("Warning: API_KEY environment variable not set!")
+    # Depending on requirements, you might want to exit or raise an error here.
+    # For now, we'll just print a warning and continue, which might lead to auth errors later.
 
 @app.route('/')
 def index():
-    return render_template_string(HTML_TEMPLATE, data=latest_data.copy())
+    return render_template('index.html', data=latest_data.copy())
 
 
 
@@ -67,4 +72,3 @@ if __name__ == '__main__':
         if db.create_tables():
             db.disconnect()
             app.run(host='0.0.0.0', port=5011, debug=True)
-

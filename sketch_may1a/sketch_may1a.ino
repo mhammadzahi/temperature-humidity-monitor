@@ -8,7 +8,7 @@ const char* ssid = "your_network_name";
 const char* password = "your_network_password";
 
 const char* serverIP = "server_IP";
-const int serverPort = 5000; //flask default port
+const int serverPort = 5000;
 const char* serverPath = "/data";
 
 
