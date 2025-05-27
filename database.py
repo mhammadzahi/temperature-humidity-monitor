@@ -1,33 +1,16 @@
 import psycopg2
 import yaml
 import os
+from dotenv import load_dotenv
 
 
 class Database:
-    def _load_config(self):
-        if not os.path.exists(self.config_path):
-            print(f"Configuration file not found: {self.config_path}")
-            return None
-
-        try:
-            with open(self.config_path, 'r') as f:
-                return yaml.safe_load(f)
-
-        except yaml.YAMLError as e:
-            print(f"Error parsing YAML configuration: {e}")
-            return None
-            
-        except Exception as e:
-            print(f"Error reading configuration file: {e}")
-            return None
 
     def __init__(self, config_path):
         self.config_path = config_path
-        self.config = self._load_config()
+        load_dotenv()
         self.conn = None
         self.cursor = None
-        if not self.config:
-            raise ValueError("Failed to load database configuration.")
 
 
     def connect(self): # -- done
@@ -35,19 +18,14 @@ class Database:
             print("Already connected")
             return True
 
-        if not self.config or 'database' not in self.config:
-            print("Database configuration is missing or incomplete.")
-            return False
-
-        db_config = self.config['database']
-        required_keys = ['constr']
-        if not all(key in db_config for key in required_keys):
-            print("Database configuration is missing required keys (host, port, user, password, dbname).")
+        db_url = os.environ.get("DATABASE_URL")
+        if not db_url:
+            print("Database URL is missing from .env file.")
             return False
 
         try:
-            self.conn = psycopg2.connect(db_config['constr'])
-            self.conn.autocommit = True # Autocommit changes
+            self.conn = psycopg2.connect(db_url)
+            self.conn.autocommit = True  # Autocommit changes
             self.cursor = self.conn.cursor()
             print("Database connection successful.")
             return True
@@ -128,9 +106,9 @@ class Database:
             if not self.connect(): # Try to reconnect
                  return False
 
-        if table_name not in self.config.get('tables', {}):
-            print(f"Table '{table_name}' not defined in configuration.")
-            return False
+        # if table_name not in self.config.get('tables', {}):
+        #     print(f"Table '{table_name}' not defined in configuration.")
+        #     return False
 
         # Filter out keys not meant for direct insertion (like auto-generated ones)
         # Or better, get column names from config excluding auto-generated ones if possible

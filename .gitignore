@@ -1,2 +1,41 @@
-env/
-config.yaml
+# Byte-compiled / optimized / DLL files
+/__pycache__
+*.py[cod]
+*$py.class
+
+# Distribution / packaging
+.eggs/
+dist/
+sdist/
+*.egg-info/
+wheels
+*.whl
+MANIFEST
+
+# PyInstaller
+/# SPEC files
+*.spec
+/# Build folder (normally 'build')
+build/
+
+# DS Store files
+.DS_Store
+
+# Env files
+.env
+
+# IDE files
+.idea/
+*.swp
+*.swo
+*.vscode/
+
+# Log files
+*.log
+
+# Temp files
+*.tmp
+
+# OS generated files
+Thumbs.db
+

@@ -1,0 +1,17 @@
+polling_interval: 60 # seconds
+
+tables:
+  temperature:
+    columns:
+      timestamp: TIMESTAMP
+      value: FLOAT
+    fields:
+      timestamp: TIMESTAMP
+      value: FLOAT
+  humidity:
+    columns:
+      timestamp: TIMESTAMP
+      value: FLOAT
+    fields:
+      timestamp: TIMESTAMP
+      value: FLOAT

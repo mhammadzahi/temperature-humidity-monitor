@@ -74,8 +74,8 @@ def receive_data():
 #asgi_app = WsgiToAsgi(app)  # Convert Flask WSGI to ASGI
 
 if __name__ == '__main__':
-    if db.connect():
-        if db.create_tables():
-            db.disconnect()
-            app.run(host='0.0.0.0', port=5011, debug=True)# dev
+    #if db.connect():
+    #    if db.create_tables():
+    #        db.disconnect()
+    app.run(host='0.0.0.0', port=5011, debug=True)# dev
             #uvicorn.run(asgi_app, host="0.0.0.0", port=50011)# prod
